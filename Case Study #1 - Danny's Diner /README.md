@@ -1,6 +1,6 @@
 ## E-R Diagram
 
-
+![E-R Week 1](https://github.com/mirkocoz/8-Week-SQL-Challenge/assets/225798/fe47ddb2-cc07-4e6f-b424-1439158c5259)
 
 ### Case Study Questions
 
