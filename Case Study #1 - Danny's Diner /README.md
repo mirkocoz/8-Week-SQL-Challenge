@@ -129,6 +129,131 @@ WHERE
 |B|ramen|
 |C|ramen|
 
+---
+### 6. Which item was purchased first by the customer after they became a member?
+#### Query  
+
+```sql
+WITH cte_sales AS (
+ SELECT
+ 	ROW_NUMBER() OVER(PARTITION BY s.customer_id ORDER BY s.order_date) AS number,
+ 	s.customer_id AS customer,
+ 	p.product_name AS item 
+ FROM 
+ 	members m INNER JOIN sales s on (m.customer_id = s.customer_id)
+ 	INNER JOIN menu p ON (s.product_id = p.product_id)
+WHERE 
+	s.order_date  > m.join_date 
+)
+SELECT
+	customer,
+	item
+FROM
+	cte_sales
+WHERE 
+	number = 1	
+	
+```
+#### Result
+|customer|item|
+|--------|----|
+|A|ramen|
+|B|sushi|
+
+---
+### 7. Which item was purchased just before the customer became a member?
+#### Query  
+
+```sql
+WITH cte_sales AS (	
+SELECT
+ 	DENSE_RANK  () OVER(PARTITION BY s.customer_id ORDER BY s.order_date DESC) AS rank,
+ 	s.customer_id AS customer,
+ 	p.product_name AS item
+ FROM 
+ 	sales s LEFT JOIN members m  ON (s.customer_id = m.customer_id)  
+ 	INNER JOIN menu p ON (s.product_id = p.product_id)
+WHERE 
+	s.order_date  < m.join_date 
+)
+SELECT
+	customer,
+	item
+FROM
+	cte_sales
+WHERE 
+	rank = 1	
+	
+```
+#### Result
+|customer|item|
+|--------|----|
+|A|sushi|
+|A|curry|
+|B|sushi|
+
+---
+### 8. What is the total items and amount spent for each member before they became a member?
+#### Query  
+
+```sql
+SELECT
+	s.customer_id AS customer,
+ 	COUNT(s.product_id) AS total_items,
+ 	SUM(p.price) AS amount_spent
+ FROM 
+ 	members m INNER JOIN  sales s on (m.customer_id = s.customer_id)
+ 	INNER JOIN menu p ON (s.product_id = p.product_id)
+WHERE 
+	s.order_date < m.join_date 
+GROUP BY 
+	s.customer_id	
+	
+```
+#### Result
+|customer|total_items|amount_spent|
+|--------|-----------|------------|
+|B|3|40|
+|A|2|25|
+
+---
+### 8. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+#### Query  
+
+```sql
+SELECT
+	s.customer_id AS customer,
+	SUM(
+	CASE 
+		WHEN p.product_name ='sushi' THEN 20 * p.price
+	ELSE
+		10 * p.price
+	END 
+	) AS points		
+ FROM 
+ 	sales s INNER JOIN menu p ON (s.product_id = p.product_id)
+	 
+GROUP BY 
+	s.customer_id
+	
+```
+#### Result
+|customer|points|
+|--------|------|
+|B|940|
+|C|360|
+|A|860|
+
+
+
+
+
+
+
+
+
+
+
 
 
 
