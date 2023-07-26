@@ -1,6 +1,6 @@
 ## E-R Diagram
 
-![alt text]("Logo Title Text 1")
+
 
 ### Case Study Questions
 
