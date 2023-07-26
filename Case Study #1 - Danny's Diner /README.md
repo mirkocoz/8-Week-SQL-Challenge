@@ -217,7 +217,7 @@ GROUP BY
 |A|2|25|
 
 ---
-### 8. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+### 9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 #### Query  
 
 ```sql
@@ -245,7 +245,112 @@ GROUP BY
 |A|860|
 
 
+-- 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+SELECT
+	
+FROM 
+ 	members m INNER JOIN  sales s on (m.customer_id = s.customer_id)
+ 	INNER JOIN menu p ON (s.product_id = p.product_id)
+WHERE
+	s.customer_id IN ('A','B')
+	AND s.order_date  BETWEEN m.join_date AND m.join_date + INTERVAL '6 days'
 
+	
+FROM 
+ 	members m INNER JOIN  sales s on (m.customer_id = s.customer_id)
+ 	INNER JOIN menu p ON (s.product_id = p.product_id)
+WHERE
+	s.customer_id IN ('A','B')
+	AND s.order_date  BETWEEN m.join_date + INTERVAL '7 days' AND '2021-01-31'	
+	
+	
+	
+SELECT '2021-01-01'::DATE + INTERVAL '6 days'
+
+/*
+ Bonus Questions
+Join All The Things
+The following questions are related creating basic data tables that Danny and his team can use to quickly derive insights without needing to join the underlying tables using SQL.
+
+Recreate the following table output using the available data: 
+ */
+SELECT
+	s.customer_id, 
+	s.order_date,
+	p.product_name,
+	p.price,
+	CASE 
+		WHEN s.order_date >= m.join_date THEN 'Y'
+		WHEN s.order_date < m.join_date  THEN 'N'
+		WHEN m.join_date IS NULL THEN 'N'
+	END AS member
+	
+FROM 
+ 	sales s LEFT JOIN members m ON (s.customer_id = m.customer_id)
+ 	INNER JOIN menu p ON (s.product_id = p.product_id)
+ORDER BY 
+	s.customer_id, s.order_date, p.product_name 
+	
+/*
+Rank All The Things
+Danny also requires further information about the ranking of customer products, but he purposely does not need the ranking for non-member purchases so he expects null ranking values
+ for the records when customers are not yet part of the loyalty program 
+ */	
+WITH cte_sales AS 
+(
+	SELECT
+		s.customer_id, 
+		s.order_date,
+		p.product_name,
+		p.price,
+		CASE 
+			WHEN s.order_date >= m.join_date THEN 'Y'
+			WHEN s.order_date < m.join_date  THEN 'N'
+			WHEN m.join_date IS NULL THEN 'N'
+		END AS member
+	FROM 
+	 	sales s LEFT JOIN members m ON (s.customer_id = m.customer_id)
+	 	INNER JOIN menu p ON (s.product_id = p.product_id)
+	ORDER BY 
+		s.customer_id, s.order_date, p.product_name	
+)
+SELECT
+	customer_id, 
+	order_date,
+	product_name,
+	price,
+	MEMBER,
+	CASE 
+		WHEN MEMBER='N' THEN NULL
+		ELSE RANK() OVER(PARTITION BY customer_id,MEMBER  ORDER BY order_date)  
+	END AS ranking
+FROM 
+	cte_sales
+	
+
+	
+SELECT
+    s.customer_id,
+    s.order_date,
+    p.product_name,
+    p.price,
+    CASE 
+        WHEN s.order_date >= m.join_date THEN 'Y'
+        ELSE 'N'
+    END AS member,
+    CASE 
+        WHEN s.order_date >= m.join_date THEN
+            RANK() OVER (PARTITION BY s.customer_id ORDER BY s.order_date)
+        ELSE
+            NULL
+    END AS ranking
+FROM
+    sales s
+INNER JOIN menu p ON s.product_id = p.product_id
+LEFT JOIN members m ON s.customer_id = m.customer_id
+ORDER BY
+    s.customer_id, s.order_date, p.product_name;
+	
 
 
 
