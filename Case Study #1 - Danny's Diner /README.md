@@ -10,7 +10,7 @@
 
 ````sql
 SELECT
-	s.customer_id,
+	s.customer_id AS customer,
   	SUM(m.price) AS total_amount
 FROM 
 	sales s INNER JOIN menu m ON (s.product_id = m.product_id)
@@ -18,7 +18,7 @@ GROUP BY
 	s.customer_id
 ````
 #### Result
-|customer_id|total_amount|
+|customer|total_amount|
 |-----------|------------|
 |B|74|
 |C|36|
@@ -30,7 +30,7 @@ GROUP BY
 
 ```sql
 SELECT
-	customer_id,
+	customer_id AS customer,
 	COUNT(distinct order_date) AS days
 FROM 
 	dannys_diner.sales AS total_days
@@ -38,7 +38,7 @@ GROUP BY
 	customer_id
 ```
 #### Result
-|customer_id|days|
+|customer|days|
 |-----------|-----|
 |A|4|
 |B|6|
