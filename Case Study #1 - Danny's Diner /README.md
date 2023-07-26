@@ -17,5 +17,30 @@ GROUP BY
 	s.customer_id
 ```
 #### Result
+|customer_id|total_amount|
+|-----------|------------|
+|B|74|
+|C|36|
+|A|76|
+
+2. How many days has each customer visited the restaurant?
+#### Query  
+
+```SQL
+SELECT
+	customer_id,
+	COUNT(distinct order_date)
+FROM 
+	dannys_diner.sales AS total_days
+GROUP BY
+	customer_id
+```
+#### Result
+|customer_id|count|
+|-----------|-----|
+|A|4|
+|B|6|
+|C|2|
+
 
 
