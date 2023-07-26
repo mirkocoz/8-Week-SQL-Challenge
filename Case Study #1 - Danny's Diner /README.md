@@ -44,6 +44,7 @@ GROUP BY
 |B|6|
 |C|2|
 
+---
 ### 3. What was the first item from the menu purchased by each customer?
 #### Query  
 
@@ -72,6 +73,7 @@ WHERE
 |B|curry|
 |C|ramen|
 
+---
 ### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 #### Query  
 
@@ -93,6 +95,7 @@ LIMIT 1
 |----|---------------|
 |ramen|8|
 
+---
 ### 5.  Which item was the most popular for each customer?
 #### Query  
 
