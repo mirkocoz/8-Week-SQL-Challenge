@@ -275,7 +275,7 @@ The following questions are related creating basic data tables that Danny and hi
 
 Recreate the following table output using the available data: 
 
-[image](https://github.com/mirkocoz/8-Week-SQL-Challenge/assets/225798/6f98796e-7456-48d6-8d46-1a1346c6ebaf)
+![image](https://github.com/mirkocoz/8-Week-SQL-Challenge/assets/225798/6f98796e-7456-48d6-8d46-1a1346c6ebaf)
 
 ### Query
 
