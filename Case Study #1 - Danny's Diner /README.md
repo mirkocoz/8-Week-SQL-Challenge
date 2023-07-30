@@ -275,7 +275,7 @@ The following questions are related creating basic data tables that Danny and hi
 
 Recreate the following table output using the available data: 
 
-[image](https://github.com/mirkocoz/8-Week-SQL-Challenge/assets/225798/6f98796e-7456-48d6-8d46-1a1346c6ebaf
+[image](https://github.com/mirkocoz/8-Week-SQL-Challenge/assets/225798/6f98796e-7456-48d6-8d46-1a1346c6ebaf)
 
 ### Query
 
@@ -302,43 +302,13 @@ ORDER BY
 Danny also requires further information about the ranking of customer products, but he purposely does not need the ranking for non-member purchases so he expects null ranking values
  for the records when customers are not yet part of the loyalty program 
 
+![image](https://github.com/mirkocoz/8-Week-SQL-Challenge/assets/225798/4197a1c5-9c3e-4732-bd49-7f1384cda7d5)
 
 
 
- 
-WITH cte_sales AS 
-(
-	SELECT
-		s.customer_id, 
-		s.order_date,
-		p.product_name,
-		p.price,
-		CASE 
-			WHEN s.order_date >= m.join_date THEN 'Y'
-			WHEN s.order_date < m.join_date  THEN 'N'
-			WHEN m.join_date IS NULL THEN 'N'
-		END AS member
-	FROM 
-	 	sales s LEFT JOIN members m ON (s.customer_id = m.customer_id)
-	 	INNER JOIN menu p ON (s.product_id = p.product_id)
-	ORDER BY 
-		s.customer_id, s.order_date, p.product_name	
-)
-SELECT
-	customer_id, 
-	order_date,
-	product_name,
-	price,
-	MEMBER,
-	CASE 
-		WHEN MEMBER='N' THEN NULL
-		ELSE RANK() OVER(PARTITION BY customer_id,MEMBER  ORDER BY order_date)  
-	END AS ranking
-FROM 
-	cte_sales
-	
+### Query
 
-	
+```sql
 SELECT
     s.customer_id,
     s.order_date,
@@ -360,6 +330,10 @@ INNER JOIN menu p ON s.product_id = p.product_id
 LEFT JOIN members m ON s.customer_id = m.customer_id
 ORDER BY
     s.customer_id, s.order_date, p.product_name;
+
+```	
+
+	
 	
 
 
